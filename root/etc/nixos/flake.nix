@@ -12,7 +12,7 @@
         ./configuration.nix
       
 
-      ({ pkgs, ...}: {
+      ({ pkgs, ... }: {
         packages = [
           
         ];
