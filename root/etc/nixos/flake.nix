@@ -15,16 +15,17 @@
 
       modules = [
         ({ pkgs, ... }: {
-          environment.systemPackages = with pkgs; [
+          users.users.waynevanson.packages = with pkgs; [
             alacritty
             cron
             chromium
             firefox
-            nixfmt
+            git
+            nixfmt-classic
             openscad-unstable
             prusa-slicer
+            stow
             zoom-us
-            nixfmt-classic
             (vscode-with-extensions.override {
               vscodeExtensions = with vscode-extensions;
                 [
