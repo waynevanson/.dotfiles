@@ -1,2 +1,3 @@
 stow --target / root
-sudo stow --target ~ home
+stow --target ~ home
+nixos-rebuild switch --impure
