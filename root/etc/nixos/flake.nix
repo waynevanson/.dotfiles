@@ -19,9 +19,11 @@
             alacritty
             cron
             chromium
+            corepack
             firefox
             git
             nixfmt-classic
+            nodejs
             openscad-unstable
             prusa-slicer
             stow
