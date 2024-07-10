@@ -6,27 +6,51 @@
   inputs = {
     # NixOS official package source, using the nixos-24.05 branch here
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+
+    # Rust overlay with sensible defaults
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: {
-    # Please replace my-nixos with your hostname
+  outputs = { self, nixpkgs, fenix }:
+
+  {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
+      
 
       modules = [
         ({ pkgs, ... }: {
           users.users.waynevanson.packages = with pkgs; [
             alacritty
+            (bitwig-studio.overrideAttrs({
+               version = "5.0.11";
+               src = fetchurl {
+                  url = "https://www.bitwig.com/dl/Bitwig%20Studio/5.0.11/installer_linux/";
+                  hash = "sha256-c9bRWVWCC9hLxmko6EHgxgmghrxskJP4PQf3ld2BHoY=";
+              };
+            }))
             cron
             chromium
+            chromedriver
             corepack
+            discord
             firefox
             git
+            inkscape-with-extensions
+            lutris
             nixfmt-classic
             nodejs
+            obsidian
             openscad-unstable
             prusa-slicer
+            signal-desktop
+            steam
             stow
+            unzip
+            zip
             zoom-us
             (vscode-with-extensions.override {
               vscodeExtensions = with vscode-extensions;
@@ -44,7 +68,14 @@
                   redhat.vscode-yaml
                   tamasfe.even-better-toml
                   vscodevim.vim
-                ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [ ];
+                ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+                  {
+                    publisher = "leathong";
+                    name = "openscad-language-support";
+                    version = "1.2.5";
+                    sha256 = "sha256-/CLxBXXdUfYlT0RaGox1epHnyAUlDihX1LfT5wGd2J8="; 
+                  }
+                ];
             })
           ];
         })

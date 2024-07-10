@@ -1,14 +1,19 @@
-{ 
-  "workbench.colorTheme": "GitHub Dark",
+{
+  "update.mode": "none",
   "workbench.iconTheme": "material-icon-theme",
+  "workbench.colorTheme": "GitHub Dark",
   "workbench.productIconTheme": "material-product-icons",
   "editor.fontFamily": "JetBrains Mono",
   "terminal.integrated.fontFamily": "JetBrains Mono",
   "editor.fontLigatures": true,
-  "editor.formatOnSave": true,
   "[jsonc][json][yaml][yml][typescript][typescriptreact][javascript][javascriptreact]": {
+    "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[astro]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
   },
   "[toml]": {
     "editor.formatOnSave": true,
@@ -34,11 +39,16 @@
     "editor.formatOnSave": true
   },
   "[css]": {
+    "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[scss]": {
+    "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "liveServer.settings.donotShowInfoMsg": true,
+  "[scad]": {
+    "editor.tabSize": 2,
+    "editor.indentSize": "tabSize"
+  },
   "window.zoomLevel": 2
 }
