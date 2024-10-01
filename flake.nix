@@ -4,16 +4,17 @@
     inputs = {
         nixpkgs.url = "nixpkgs/nixos-unstable";
 
-        inputs.flake-utils.url = "github:numtide/flake-utils";
-        inputs.flake-utils.inputs.systems.follows = "systems";
+        flake-utils.url = "github:numtide/flake-utils";
+        flake-utils.inputs.systems.follows = "systems";
     };
 
-    outputs = { self, nixpkgs, flake-utils, fenix... }: 
+    outputs = { self, nixpkgs, flake-utils, ... }: 
         flake-utils.eachDefaultSystem (system:
             let
                 pkgs = import nixpkgs { inherit system; };
                 users = ["waynevanson"];
                 nixos = ({ pkgs, ...}:
+                    with pkgs;
                     let 
                         bitwig-studio' = (bitwig-studio.overrideAttrs({
                             version = "5.0.11";
@@ -57,7 +58,7 @@
                                 "networkmanager"
                                 "wheel"
                                 "docker"
-                            ]
+                            ];
 
                             virtualisation.docker.enable = true;
 
