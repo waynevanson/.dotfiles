@@ -5,7 +5,7 @@
 
   inputs = {
     # NixOS official package source, using the nixos-24.05 branch here
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "nixpkgs/nixos-unstable";
 
     # Rust overlay with sensible defaults
     fenix = {
@@ -19,10 +19,20 @@
   {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      
 
       modules = [
+        ({ ... }: {
+          programs.steam = {
+            enable = true;
+            remotePlay.openFirewall = true;
+            dedicatedServer.openFirewall = true;
+            localNetworkGameTransfers.openFirewall = true;
+          };
+        })
+
         ({ pkgs, ... }: {
+          users.users.waynevanson.extraGroups = ["docker"];
+          virtualisation.docker.enable = true;
           users.users.waynevanson.packages = with pkgs; [
             alacritty
             (bitwig-studio.overrideAttrs({
@@ -36,7 +46,10 @@
             chromium
             chromedriver
             corepack
+            direnv
             discord
+	    docker
+            docker-compose
             firefox
             git
             inkscape-with-extensions
@@ -46,6 +59,8 @@
             obsidian
             openscad-unstable
             prusa-slicer
+            pixelorama
+            rar
             signal-desktop
             steam
             stow
@@ -63,9 +78,13 @@
                   eamodio.gitlens
                   esbenp.prettier-vscode
                   github.github-vscode-theme
+                  mkhl.direnv
+		  ms-vscode-remote.remote-containers
                   pkief.material-icon-theme
                   pkief.material-product-icons
                   redhat.vscode-yaml
+                  arrterian.nix-env-selector
+                  rust-lang.rust-analyzer
                   tamasfe.even-better-toml
                   vscodevim.vim
                 ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [

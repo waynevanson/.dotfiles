@@ -50,5 +50,8 @@
     "editor.tabSize": 2,
     "editor.indentSize": "tabSize"
   },
-  "window.zoomLevel": 2
+  "[rust]": { "editor.formatOnSave": true },
+  "window.zoomLevel": 2,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.tsserver.log": "verbose"
 }
