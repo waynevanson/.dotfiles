@@ -2,7 +2,7 @@
     description = "NixOS flake for yours truly";
 
     inputs = {
-        nixpkgs.url = "nixpkgs/nixos-24.05";
+        nixpkgs.url = "nixpkgs/nixos-unstable";
 
         flake-utils.url = "github:numtide/flake-utils";
         flake-utils.inputs.systems.follows = "nixpkgs";
@@ -24,7 +24,6 @@
                 }));
                 vscode' = with pkgs; (vscode-with-extensions.override {
                     vscodeExtensions = with vscode-extensions; [
-                        bitwig-studio'
                         astro-build.astro-vscode
                         bbenoist.nix
                         dbaeumer.vscode-eslint
@@ -68,6 +67,7 @@
                     environment.systemPackages = with pkgs; [
                         alacritty
                         alejandra
+                        bitwig-studio'
                         cron
                         chromium
                         chromedriver
