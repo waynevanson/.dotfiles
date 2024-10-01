@@ -2,28 +2,26 @@
     description = "NixOS flake for yours truly";
 
     inputs = {
-        nixpkgs.url = "nixpkgs/nixos-unstable";
+        nixpkgs.url = "nixpkgs/nixos-24.05";
 
         flake-utils.url = "github:numtide/flake-utils";
-        flake-utils.inputs.systems.follows = "systems";
+        flake-utils.inputs.systems.follows = "nixpkgs";
     };
 
     outputs = { self, nixpkgs, flake-utils, ... }: 
-        flake-utils.eachDefaultSystem (system:
+        flake-utils.lib.eachDefaultSystem (system:
             let
                 pkgs = import nixpkgs { inherit system; };
-                users = ["waynevanson"];
-                nixos = ({ pkgs, ...}:
-                    with pkgs;
+                nixos = 
                     let 
-                        bitwig-studio' = (bitwig-studio.overrideAttrs({
+                        bitwig-studio' = with pkgs; (bitwig-studio.overrideAttrs({
                             version = "5.0.11";
                             src = fetchurl {
                                 url = "https://www.bitwig.com/dl/Bitwig%20Studio/5.0.11/installer_linux/";
                                 hash = "sha256-c9bRWVWCC9hLxmko6EHgxgmghrxskJP4PQf3ld2BHoY=";
                             };
                         }));
-                        vscode' = (vscode-with-extensions.override {
+                        vscode' = with pkgs; (vscode-with-extensions.override {
                             vscodeExtensions = with vscode-extensions; [
                                 bitwig-studio'
                                 astro-build.astro-vscode
@@ -99,14 +97,14 @@
                                 zip
                                 zoom-us
                             ];
-                        }
-                );
+                        };
+                
             in
                 {
-                    nixosConfigurations.nixos = pkgs.nixosSystem {
-                        system = system;
+                    nixosConfigurations.nixos = pkgs.lib.nixosSystem {
+                        inherit system;
                         modules = [
-                            /etc/nixos/configuration.nix
+                            "/etc/nixos/configuration.nix"
                             nixos
                         ];
                     };
