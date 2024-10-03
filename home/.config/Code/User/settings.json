@@ -1,7 +1,8 @@
 {
+  "editor.lineHeight": 1.2,
   "update.mode": "none",
   "workbench.iconTheme": "material-icon-theme",
-  "workbench.colorTheme": "GitHub Dark",
+  "workbench.colorTheme": "GitHub Light",
   "workbench.productIconTheme": "material-product-icons",
   "editor.fontFamily": "JetBrains Mono",
   "terminal.integrated.fontFamily": "JetBrains Mono",

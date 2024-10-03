@@ -111,6 +111,23 @@
               ];
         })
 
+      # X11 & Gnome
+      ({...}:{
+        # Enable the GNOME Desktop Environment.
+        services.xserver.desktopManager.gnome.enable = true;
+        services.xserver.displayManager.gdm.enable = true;
+
+        # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
+        systemd.services."getty@tty1".enable = false;
+        systemd.services."autovt@tty1".enable = false;
+        
+        services.xserver.xkb = {
+          layout = "au";
+          variant = "";
+        };
+        services.xserver.enable = true;
+      })
+
       # System: languages, hardware & software
       ({lib,config, ...}: {
         boot.loader.systemd-boot.enable = true;
@@ -120,9 +137,6 @@
         networking.networkmanager.enable = true;
         networking.hostName = "nixos";
 
-        # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
-        systemd.services."getty@tty1".enable = false;
-        systemd.services."autovt@tty1".enable = false;
 
         time.timeZone = "Australia/Melbourne";
 
@@ -139,15 +153,8 @@
           LC_TIME = "en_AU.UTF-8";
         };
 
-        # Enable the GNOME Desktop Environment.
-        services.xserver.desktopManager.gnome.enable = true;
-        services.xserver.displayManager.gdm.enable = true;
 
         # Configure keymap in X11
-        services.xserver.xkb = {
-          layout = "au";
-          variant = "";
-        };
 
         # Enable CUPS to print documents.
         services.printing.enable = true;
@@ -168,8 +175,6 @@
         ];
 
         # systemish
-
-        services.xserver.enable = true;
 
         users.users.${user} = {
           isNormalUser = true;
