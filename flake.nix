@@ -9,11 +9,11 @@
       ({
         pkgs,
         lib,
+        config,
         ...
       }: {
-        # config.users.users.${user}.extraGroups =
-        #   lib.optionals (config.users.users.${user}.extraGroups or [])
-        #   ++ ["docker"];
+        users.users.${user}.extraGroups =
+          lib.mkMerge [["docker"]];
 
         # Actually turn it on.
         virtualisation.docker.enable = true;
@@ -26,7 +26,6 @@
       ({
         pkgs,
         lib,
-        config,
         ...
       }: {
         programs.steam = {
@@ -84,6 +83,9 @@
         in {
           environment.systemPackages =
             with pkgs;[
+                bitwig-studio'
+                vscode'
+                
                 alacritty
                 # nix formatter
                 alejandra
@@ -110,7 +112,7 @@
         })
 
       # System: languages, hardware & software
-      ({lib, ...}: {
+      ({lib,config, ...}: {
         boot.loader.systemd-boot.enable = true;
         boot.loader.efi.canTouchEfiVariables = true;
         boot.supportedFilesystems = ["ntfs"];
@@ -173,9 +175,7 @@
           isNormalUser = true;
           description = "Wayne Van Son";
 
-          # extraGroups =
-          #   lib.optionals (config.users.users.${user}.extraGroups or [])
-          #   ++ ["networkmanager" "wheel"];
+           extraGroups = lib.mkMerge [["networkmanager" "wheel"]];
         };
       })
 
