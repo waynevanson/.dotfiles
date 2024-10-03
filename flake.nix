@@ -34,109 +34,143 @@
           dedicatedServer.openFirewall = true;
           localNetworkGameTransfers.openFirewall = true;
         };
-        environment.systemPackages = with pkgs;
-         [
-            lutris
-            wineWowPackages.stable
-            winetricks
-          ];
+        environment.systemPackages = with pkgs; [
+          lutris
+          wineWowPackages.stable
+          winetricks
+        ];
       })
 
       # Packages
-      ({pkgs,lib, ...}:
-        let
-          bitwig-studio' = (pkgs.bitwig-studio.overrideAttrs {
-            version = "5.0.11";
-            src = pkgs.fetchurl {
-              url = "https://www.bitwig.com/dl/Bitwig%20Studio/5.0.11/installer_linux/";
-              hash = "sha256-c9bRWVWCC9hLxmko6EHgxgmghrxskJP4PQf3ld2BHoY=";
-            };
-          });
-          vscode' = with pkgs; ( vscode-with-extensions.override {
-            vscodeExtensions = with vscode-extensions;
-              [
-                astro-build.astro-vscode
-                bbenoist.nix
-                dbaeumer.vscode-eslint
-                eamodio.gitlens
-                esbenp.prettier-vscode
-                github.github-vscode-theme
-                mkhl.direnv
-                ms-vscode-remote.remote-containers
-                pkief.material-icon-theme
-                pkief.material-product-icons
-                redhat.vscode-yaml
-                arrterian.nix-env-selector
-                rust-lang.rust-analyzer
-                tamasfe.even-better-toml
-                vscodevim.vim
-              ]
-              ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-                {
-                  publisher = "leathong";
-                  name = "openscad-language-support";
-                  version = "1.2.5";
-                  sha256 = "sha256-/CLxBXXdUfYlT0RaGox1epHnyAUlDihX1LfT5wGd2J8=";
-                }
-              ];
-          });
-        in {
-          environment.systemPackages =
-            with pkgs;[
-                bitwig-studio'
-                vscode'
-                
-                alacritty
-                # nix formatter
-                alejandra
-                chromium
-                chromedriver
-                corepack
-                direnv
-                discord
-                firefox
-                git
-                inkscape-with-extensions
-                nodejs
-                obsidian
-                openscad-unstable
-                prusa-slicer
-                pixelorama
-                rar
-                signal-desktop
-                stow
-                unzip
-                zip
-                zoom-us
-              ];
-        })
+      ({
+        pkgs,
+        lib,
+        ...
+      }: let
+        bitwig-studio' = pkgs.bitwig-studio.overrideAttrs {
+          version = "5.0.11";
+          src = pkgs.fetchurl {
+            url = "https://www.bitwig.com/dl/Bitwig%20Studio/5.0.11/installer_linux/";
+            hash = "sha256-c9bRWVWCC9hLxmko6EHgxgmghrxskJP4PQf3ld2BHoY=";
+          };
+        };
+        vscode' = with pkgs; (vscode-with-extensions.override {
+          vscodeExtensions = with vscode-extensions;
+            [
+              astro-build.astro-vscode
+              bbenoist.nix
+              dbaeumer.vscode-eslint
+              eamodio.gitlens
+              esbenp.prettier-vscode
+              github.github-vscode-theme
+              mkhl.direnv
+              ms-vscode-remote.remote-containers
+              pkief.material-icon-theme
+              pkief.material-product-icons
+              redhat.vscode-yaml
+              arrterian.nix-env-selector
+              rust-lang.rust-analyzer
+              tamasfe.even-better-toml
+              vscodevim.vim
+            ]
+            ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+              {
+                publisher = "leathong";
+                name = "openscad-language-support";
+                version = "1.2.5";
+                sha256 = "sha256-/CLxBXXdUfYlT0RaGox1epHnyAUlDihX1LfT5wGd2J8=";
+              }
+            ];
+        });
+      in {
+        environment.systemPackages = with pkgs; [
+          bitwig-studio'
+          vscode'
+
+          alacritty
+          # nix formatter
+          alejandra
+          chromium
+          chromedriver
+          corepack
+          direnv
+          discord
+          firefox
+          git
+          inkscape-with-extensions
+          nodejs
+          obsidian
+          openscad-unstable
+          prusa-slicer
+          pixelorama
+          rar
+          signal-desktop
+          stow
+          unzip
+          zip
+          zoom-us
+        ];
+      })
 
       # X11 & Gnome
-      ({...}:{
-        # Enable the GNOME Desktop Environment.
-        services.xserver.desktopManager.gnome.enable = true;
-        services.xserver.displayManager.gdm.enable = true;
+      # ({...}:{
+      #   # Enable the GNOME Desktop Environment.
+      #   services.xserver.desktopManager.gnome.enable = true;
+      #   services.xserver.displayManager.gdm.enable = true;
 
-        # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
-        systemd.services."getty@tty1".enable = false;
-        systemd.services."autovt@tty1".enable = false;
-        
-        services.xserver.xkb = {
-          layout = "au";
-          variant = "";
+      #   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
+      #   systemd.services."getty@tty1".enable = false;
+      #   systemd.services."autovt@tty1".enable = false;
+
+      #   services.xserver.xkb = {
+      #     layout = "au";
+      #     variant = "";
+      #   };
+      #   services.xserver.enable = true;
+      # })
+
+      # X11 & River
+      ({
+        pkgs,
+        lib,
+        ...
+      }: {
+        systemd.user.services.river = {
+          enable = true;
+          description = "River Tiling Window Manager";
+          after = ["graphical-session.target"];
+          serviceConfig = {
+            ExecStart = "${pkgs.river}/bin/river";
+            Restart = "always";
+          };
+          wantedBy = ["graphical-session.target"];
         };
-        services.xserver.enable = true;
+
+        environment.systemPackages = with pkgs;
+          lib.mkMerge [
+            [
+              river
+              wayland
+              wl-clipboard
+              bemenu
+              grim
+              slurp
+            ]
+          ];
       })
 
       # System: languages, hardware & software
-      ({lib,config, ...}: {
+      ({
+        lib,
+        config,
+        ...
+      }: {
         boot.loader.systemd-boot.enable = true;
         boot.loader.efi.canTouchEfiVariables = true;
         boot.supportedFilesystems = ["ntfs"];
 
         networking.networkmanager.enable = true;
         networking.hostName = "nixos";
-
 
         time.timeZone = "Australia/Melbourne";
 
@@ -152,7 +186,6 @@
           LC_TELEPHONE = "en_AU.UTF-8";
           LC_TIME = "en_AU.UTF-8";
         };
-
 
         # Configure keymap in X11
 
@@ -180,7 +213,7 @@
           isNormalUser = true;
           description = "Wayne Van Son";
 
-           extraGroups = lib.mkMerge [["networkmanager" "wheel"]];
+          extraGroups = lib.mkMerge [["networkmanager" "wheel"]];
         };
       })
 
