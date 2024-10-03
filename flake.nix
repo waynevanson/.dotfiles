@@ -129,32 +129,49 @@
       #   services.xserver.enable = true;
       # })
 
-      # X11 & River
+      # Wayland & River
       ({
         pkgs,
         lib,
         ...
-      }: {
-        systemd.user.services.river = {
-          enable = true;
-          description = "River Tiling Window Manager";
-          after = ["graphical-session.target"];
-          serviceConfig = {
-            ExecStart = "${pkgs.river}/bin/river";
-            Restart = "always";
-          };
-          wantedBy = ["graphical-session.target"];
-        };
+      }: let
+        river' = with pkgs; (river.overrideAttrs {
+          postInstall = let
+            session = ''
+              [Desktop Entry]
+              Name=River
+              Comment=Dynamic Wayland compositor
+              Exec=river
+              Type=Application
+            '';
+          in ''
+            mkdir -p $out/share/wayland-sessions
+            echo "${session}" > $out/share/wayand-sessions/river.desktop
+          '';
+          passthru.providedSessions = ["river"];
+        });
+      in {
+        # systemd.user.services.river = {
+        #   enable = true;
+        #   description = "River Tiling Window Manager";
+        #   after = ["graphical-session.target"];
+        #   serviceConfig = {
+        #     ExecStart = "${pkgs.river}/bin/river";
+        #     Restart = "always";
+        #   };
+        #   wantedBy = ["graphical-session.target"];
+        # };
 
         environment.systemPackages = with pkgs;
           lib.mkMerge [
             [
-              river
-              wayland
-              wl-clipboard
               bemenu
               grim
+              river'
+              rofi
               slurp
+              wayland
+              wl-clipboard
             ]
           ];
       })
