@@ -12,15 +12,17 @@
 # A rebuild script that commits on a successful build
 set -e
 
+DOTFILES_DIR="~/.dotfiles"
+
 # cd to your config dir
 pushd ~/.dotfiles
 
-# Early return if no changes were detected (thanks @singiamtel!)
-if git diff --quiet '*.nix'; then
-    echo "No changes detected, exiting."
-    popd
-    exit 0
-fi
+# # Early return if no changes were detected (thanks @singiamtel!)
+# if git diff --quiet '*.nix'; then
+#     echo "No changes detected, exiting."
+#     popd
+#     exit 0
+# fi
 
 # Autoformat your nix files
 alejandra . &>/dev/null \

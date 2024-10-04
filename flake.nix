@@ -129,51 +129,75 @@
       #   services.xserver.enable = true;
       # })
 
-      # Wayland & River
+      # Wayland & Sway
       ({
         pkgs,
         lib,
         ...
       }: let
-        river' = with pkgs; (river.overrideAttrs {
-          postInstall = let
-            session = ''
-              [Desktop Entry]
-              Name=River
-              Comment=Dynamic Wayland compositor
-              Exec=river
-              Type=Application
-            '';
-          in ''
-            mkdir -p $out/share/wayland-sessions
-            echo "${session}" > $out/share/wayand-sessions/river.desktop
-          '';
-          passthru.providedSessions = ["river"];
-        });
-      in {
-        # systemd.user.services.river = {
-        #   enable = true;
-        #   description = "River Tiling Window Manager";
-        #   after = ["graphical-session.target"];
-        #   serviceConfig = {
-        #     ExecStart = "${pkgs.river}/bin/river";
-        #     Restart = "always";
-        #   };
-        #   wantedBy = ["graphical-session.target"];
-        # };
+        config = ''
+          # Brightness
+          bindsym XF86MonBrightnessDown exec light -U 10
+          bindsym XF86MonBrightnessUp exec light -A 10
 
+          # Volume
+          bindsym XF86AudioRaiseVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ +1%'
+          bindsym XF86AudioLowerVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ -1%'
+          bindsym XF86AudioMute exec 'pactl set-sink-mute @DEFAULT_SINK@ toggle'
+
+          # give sway a little time to startup before starting kanshi.
+          exec sleep 5; systemctl --user start kanshi.service
+        '';
+      in {
+        # foundation
         environment.systemPackages = with pkgs;
           lib.mkMerge [
             [
-              bemenu
+              # screenshot functionality
               grim
-              river'
-              rofi
+              # screenshot functionality
               slurp
-              wayland
+              # wl-copy & wl-paste for copy paste from stdin/stdout
               wl-clipboard
+              # notification system
+              mako
             ]
           ];
+
+        # brightness & volume
+        users.users.${user}.extraGroups = lib.mkMerge [
+          ["video"]
+        ];
+
+        # dbus and secrets
+        services.gnome.gnome-keyring.enable = true;
+
+        # enable sway wm
+        programs.sway = {
+          enable = true;
+          wrapperFeatures.gtk = true;
+        };
+
+        # kanshi systemd service
+        systemd.user.services.kanshi = {
+          description = "kanshi daemon";
+          serviceConfig = {
+            Type = "simple";
+            ExecStart = ''${pkgs.kanshi}/bin/kanshi -c kanshi_config_file'';
+          };
+        };
+
+        # allow passwords to work
+        security.pam.services.swaylock = {};
+
+        security.pam.loginLimits = [
+          {
+            domain = "@${user}";
+            item = "rtprio";
+            type = "-";
+            value = 1;
+          }
+        ];
       })
 
       # System: languages, hardware & software
