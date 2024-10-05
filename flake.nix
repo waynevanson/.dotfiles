@@ -3,20 +3,27 @@
     nixpkgs.url = "nixpkgs/nixos-unstable";
   };
 
-  outputs = {nixpkgs, ...}: {
+  outputs = {nixpkgs, ...}: let
+    system = "x86_64-linux";
+    pkgs = import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+    };
+  in {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+      inherit system pkgs;
+
       modules = [
-        "./modules/docker.nix"
-        "./modules/gnome.nix"
-        "./modules/nnn.nix"
-        "./modules/packages.nix"
-        "./modules/steam.nix"
-        # "./modules/sway.nix"
-        "./modules/system.nix"
+        ./modules/docker.nix
+        ./modules/gnome.nix
+        ./modules/nnn.nix
+        ./modules/packages.nix
+        ./modules/steam.nix
+        # ./modules/sway.nix
+        ./modules/system.nix
 
         # Purely system related
-        "/etc/nixos/configuration.nix"
+        /etc/nixos/configuration.nix
       ];
     };
   };
