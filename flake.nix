@@ -18,6 +18,7 @@
         ./modules/gnome.nix
         ./modules/nnn.nix
         ./modules/packages.nix
+        ./modules/rofi.nix
         ./modules/steam.nix
         # ./modules/sway.nix
         ./modules/system.nix
