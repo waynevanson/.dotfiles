@@ -88,7 +88,6 @@
           vscode'
 
           alacritty
-          # nix formatter
           alejandra
           chromium
           chromedriver
@@ -103,6 +102,7 @@
           openscad-unstable
           prusa-slicer
           pixelorama
+          ranger
           rar
           signal-desktop
           stow
@@ -113,92 +113,92 @@
       })
 
       # X11 & Gnome
-      # ({...}:{
-      #   # Enable the GNOME Desktop Environment.
-      #   services.xserver.desktopManager.gnome.enable = true;
-      #   services.xserver.displayManager.gdm.enable = true;
+      ({...}: {
+        # Enable the GNOME Desktop Environment.
+        services.xserver.desktopManager.gnome.enable = true;
+        services.xserver.displayManager.gdm.enable = true;
 
-      #   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
-      #   systemd.services."getty@tty1".enable = false;
-      #   systemd.services."autovt@tty1".enable = false;
+        # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
+        systemd.services."getty@tty1".enable = false;
+        systemd.services."autovt@tty1".enable = false;
 
-      #   services.xserver.xkb = {
-      #     layout = "au";
-      #     variant = "";
-      #   };
-      #   services.xserver.enable = true;
-      # })
+        services.xserver.xkb = {
+          layout = "au";
+          variant = "";
+        };
+        services.xserver.enable = true;
+      })
 
       # Wayland & Sway
-      ({
-        pkgs,
-        lib,
-        ...
-      }: let
-        config = ''
-          # Brightness
-          bindsym XF86MonBrightnessDown exec light -U 10
-          bindsym XF86MonBrightnessUp exec light -A 10
+      # ({
+      #   pkgs,
+      #   lib,
+      #   ...
+      # }: let
+      #   config = ''
+      #     # Brightness
+      #     bindsym XF86MonBrightnessDown exec light -U 10
+      #     bindsym XF86MonBrightnessUp exec light -A 10
 
-          # Volume
-          bindsym XF86AudioRaiseVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ +1%'
-          bindsym XF86AudioLowerVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ -1%'
-          bindsym XF86AudioMute exec 'pactl set-sink-mute @DEFAULT_SINK@ toggle'
+      #     # Volume
+      #     bindsym XF86AudioRaiseVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ +1%'
+      #     bindsym XF86AudioLowerVolume exec 'pactl set-sink-volume @DEFAULT_SINK@ -1%'
+      #     bindsym XF86AudioMute exec 'pactl set-sink-mute @DEFAULT_SINK@ toggle'
 
-          # give sway a little time to startup before starting kanshi.
-          exec sleep 5; systemctl --user start kanshi.service
-        '';
-      in {
-        # foundation
-        environment.systemPackages = with pkgs;
-          lib.mkMerge [
-            [
-              # screenshot functionality
-              grim
-              # screenshot functionality
-              slurp
-              # wl-copy & wl-paste for copy paste from stdin/stdout
-              wl-clipboard
-              # notification system
-              mako
-            ]
-          ];
+      #     # give sway a little time to startup before starting kanshi.
+      #     exec sleep 5; systemctl --user start kanshi.service
+      #   '';
+      # in {
+      #   # foundation
+      #   environment.systemPackages = with pkgs;
+      #     lib.mkMerge [
+      #       [
+      #         # screenshot functionality
+      #         grim
+      #         # screenshot functionality
+      #         slurp
+      #         # wl-copy & wl-paste for copy paste from stdin/stdout
+      #         wl-clipboard
+      #         # notification system
+      #         mako
+      #       ]
+      #     ];
 
-        # brightness & volume
-        users.users.${user}.extraGroups = lib.mkMerge [
-          ["video"]
-        ];
+      #   # brightness & volume
+      #   users.users.${user}.extraGroups = lib.mkMerge [
+      #     ["video"]
+      #   ];
 
-        # dbus and secrets
-        services.gnome.gnome-keyring.enable = true;
+      #   # dbus and secrets
+      #   services.gnome.gnome-keyring.enable = true;
 
-        # enable sway wm
-        programs.sway = {
-          enable = true;
-          wrapperFeatures.gtk = true;
-        };
+      #   # enable sway wm
+      #   programs.sway = {
+      #     enable = true;
+      #     wrapperFeatures.gtk = true;
+      #   };
 
-        # kanshi systemd service
-        systemd.user.services.kanshi = {
-          description = "kanshi daemon";
-          serviceConfig = {
-            Type = "simple";
-            ExecStart = ''${pkgs.kanshi}/bin/kanshi -c kanshi_config_file'';
-          };
-        };
+      #   # kanshi systemd service
+      #   systemd.user.services.kanshi = {
+      #     description = "kanshi daemon";
+      #     serviceConfig = {
+      #       Type = "simple";
+      #       ExecStart = ''${pkgs.kanshi}/bin/kanshi -c kanshi_config_file'';
+      #     };
+      #   };
 
-        # allow passwords to work
-        security.pam.services.swaylock = {};
+      #   # allow passwords to work
+      #   security.pam.services.swaylock = {};
 
-        security.pam.loginLimits = [
-          {
-            domain = "@${user}";
-            item = "rtprio";
-            type = "-";
-            value = 1;
-          }
-        ];
-      })
+      #   security.pam.loginLimits = [
+      #     {
+      #       domain = "@${user}";
+      #       item = "rtprio";
+      #       type = "-";
+      #       value = 1;
+      #     }
+      #   ];
+      # })
 
       # System: languages, hardware & software
       ({
