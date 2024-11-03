@@ -10,8 +10,11 @@
   "[jsonc][json][yaml][yml][typescript][typescriptreact][javascript][javascriptreact]": {
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.snippetSuggestions": "none",
+    "emmet.showAbbreviationSuggestions": false
   },
+
   "[astro]": {
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file"
@@ -32,7 +35,8 @@
   "editor.codeLens": false,
   "editor.inlayHints.enabled": "off",
   "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
   },
   "prettier.semi": false,
   "[liquid]": {
@@ -54,5 +58,5 @@
   "[rust]": { "editor.formatOnSave": true },
   "window.zoomLevel": 2,
   "javascript.updateImportsOnFileMove.enabled": "always",
-  "typescript.tsserver.log": "verbose"
+  "typescript.tsserver.log": "off"
 }

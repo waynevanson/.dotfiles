@@ -52,7 +52,8 @@ in {
     firefox
     git
     inkscape-with-extensions
-    nodejs
+    musescore
+    nodejs_22
     obsidian
     openscad-unstable
     prusa-slicer
@@ -62,6 +63,7 @@ in {
     signal-desktop
     stow
     unzip
+    vim
     vscode'
     zip
     zoom-us
