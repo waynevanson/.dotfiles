@@ -51,6 +51,7 @@ in {
     discord
     firefox
     git
+    gnutar
     inkscape-with-extensions
     musescore
     nodejs_22
@@ -65,6 +66,7 @@ in {
     unzip
     vim
     vscode'
+    xz
     zip
     zoom-us
   ];

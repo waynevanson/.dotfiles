@@ -15,6 +15,19 @@
     "emmet.showAbbreviationSuggestions": false
   },
 
+  "[markdown]": {
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    "editor.unicodeHighlight.invisibleCharacters": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.wordWrap": "on",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    }
+  },
   "[astro]": {
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file"
@@ -58,5 +71,6 @@
   "[rust]": { "editor.formatOnSave": true },
   "window.zoomLevel": 2,
   "javascript.updateImportsOnFileMove.enabled": "always",
-  "typescript.tsserver.log": "off"
+  "typescript.tsserver.log": "off",
+  "gitlens.launchpad.indicator.enabled": false
 }
