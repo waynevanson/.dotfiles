@@ -37,6 +37,12 @@
           version = "1.2.5";
           sha256 = "sha256-/CLxBXXdUfYlT0RaGox1epHnyAUlDihX1LfT5wGd2J8=";
         }
+        {
+          publisher = "fooxly";
+          name = "themeswitch";
+          version = "1.0.5";
+          sha256 = "sha256-0skuTO2vJ//z7Lvo80/CxFKD2J/6uvJ1y3MdHAwN+Gk=";
+        }
       ];
   });
 in {
@@ -49,14 +55,18 @@ in {
     corepack
     direnv
     discord
+    ffmpeg
     firefox
+    gimp
     git
     gnutar
     inkscape-with-extensions
+    kdePackages.kdenlive
     musescore
     nodejs_22
     obsidian
     openscad-unstable
+    parallel
     prusa-slicer
     pixelorama
     ranger

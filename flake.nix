@@ -1,9 +1,10 @@
 {
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    musnix  = { url = "github:musnix/musnix";};
   };
 
-  outputs = {nixpkgs, ...}: let
+  outputs = {nixpkgs, musnix, ...}: let
     system = "x86_64-linux";
     pkgs = import nixpkgs {
       inherit system;
@@ -13,7 +14,10 @@
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       inherit system pkgs;
 
+
       modules = [
+        musnix.nixosModules.musnix
+        ({...}: { musnix.enable = true;})
         ./modules/docker.nix
         ./modules/gnome.nix
         ./modules/nnn.nix
@@ -26,6 +30,8 @@
         # Purely system related
         /etc/nixos/configuration.nix
       ];
+
+      specialArgs = { inherit nixpkgs; };
     };
   };
 }

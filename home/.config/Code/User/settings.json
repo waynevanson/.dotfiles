@@ -2,7 +2,6 @@
   "editor.lineHeight": 1.2,
   "update.mode": "none",
   "workbench.iconTheme": "material-icon-theme",
-  "workbench.colorTheme": "GitHub Dark",
   "workbench.productIconTheme": "material-product-icons",
   "editor.fontFamily": "JetBrains Mono",
   "terminal.integrated.fontFamily": "JetBrains Mono",
@@ -69,8 +68,12 @@
     "editor.indentSize": "tabSize"
   },
   "[rust]": { "editor.formatOnSave": true },
+  "rust-analyzer.check.command": "clippy",
+  // "rust-analyzer.check.extraArgs": ["--fix", "--allow-dirty", "--allow-staged"],
+  "rust-analyzer.checkOnSave": true,
   "window.zoomLevel": 2,
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsserver.log": "off",
-  "gitlens.launchpad.indicator.enabled": false
+  "gitlens.launchpad.indicator.enabled": false,
+  "workbench.colorTheme": "GitHub Dark"
 }
