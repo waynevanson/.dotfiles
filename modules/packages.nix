@@ -4,10 +4,10 @@
   lib,
   ...
 }: let
-  bitwig-studio' = pkgs.bitwig-studio.overrideAttrs {
+  bitwig-studio' = pkgs.bitwig-studio.overrideAttrs rec {
     version = "5.0.11";
     src = pkgs.fetchurl {
-      url = "https://www.bitwig.com/dl/Bitwig%20Studio/5.0.11/installer_linux/";
+      url = "https://www.bitwig.com/dl/Bitwig%20Studio/${version}/installer_linux/";
       hash = "sha256-c9bRWVWCC9hLxmko6EHgxgmghrxskJP4PQf3ld2BHoY=";
     };
   };
@@ -50,28 +50,17 @@ in {
     alacritty
     alejandra
     bitwig-studio'
-    chromium
-    chromedriver
-    corepack
     direnv
     discord
     ffmpeg
     firefox
-    gimp
     git
     gnutar
-    inkscape-with-extensions
     kdePackages.kdenlive
-    musescore
-    nodejs_22
-    obsidian
-    openscad-unstable
+    lmms
     parallel
     prusa-slicer
-    pixelorama
-    ranger
     rar
-    signal-desktop
     stow
     unzip
     vim

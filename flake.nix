@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgs.url = "nixpkgs/nixos-24.11";
     musnix  = { url = "github:musnix/musnix";};
   };
 
@@ -20,9 +20,7 @@
         ({...}: { musnix.enable = true;})
         ./modules/docker.nix
         ./modules/gnome.nix
-        ./modules/nnn.nix
         ./modules/packages.nix
-        ./modules/rofi.nix
         ./modules/steam.nix
         # ./modules/sway.nix
         ./modules/system.nix
