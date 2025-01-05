@@ -20,7 +20,7 @@
       inherit system pkgs;
       specialArgs = {inherit nixpkgs;};
     };
-  in {
+  in { 
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       inherit system pkgs;
 
@@ -48,6 +48,11 @@
           system.stateVersion = "24.05";
           wsl.enable = true;
           wsl.defaultUser = "waynevanson";
+
+          programs.nix-ld = {
+              enable = true;
+              package = pkgs.nix-ld-rs; # only for NixOS 24.05
+          };
 
           environment.systemPackages = with pkgs; [
             corepack
