@@ -20,53 +20,47 @@
       inherit system pkgs;
       specialArgs = {inherit nixpkgs;};
     };
-  in { 
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      inherit system pkgs;
+  in {
+    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem (common
+      // {
+        modules = [
+          ./modules/docker.nix
+          ./modules/gnome.nix
+          ./modules/packages.nix
+          ./modules/steam.nix
+          ./modules/system.nix
 
-      modules = [
-        ./modules/docker.nix
-        ./modules/gnome.nix
-        ./modules/packages.nix
-        ./modules/steam.nix
-        ./modules/system.nix
+          # Purely system related
+          /etc/nixos/configuration.nix
+        ];
+      });
 
-        # Purely system related
-        /etc/nixos/configuration.nix
-      ];
+    nixosConfigurations.nixos-wsl = nixpkgs.lib.nixosSystem (common
+      // {
+        modules = [
+          nixos-wsl.nixosModules.default
 
-      specialArgs = {inherit nixpkgs;};
-    };
+          ({pkgs, ...}: {
+            system.stateVersion = "24.05";
+            wsl.enable = true;
+            wsl.defaultUser = "waynevanson";
 
-    nixosConfigurations.nixos-wsl = nixpkgs.lib.nixosSystem {
-      inherit system pkgs;
-
-      modules = [
-        nixos-wsl.nixosModules.default
-
-        ({pkgs, ...}: {
-          system.stateVersion = "24.05";
-          wsl.enable = true;
-          wsl.defaultUser = "waynevanson";
-
-          programs.nix-ld = {
+            programs.nix-ld = {
               enable = true;
               package = pkgs.nix-ld-rs; # only for NixOS 24.05
-          };
+            };
 
-          environment.systemPackages = with pkgs; [
-            corepack
-            curl
-            direnv
-            git
-            nodejs
-            vim
-            wget
-          ];
-        })
-      ];
-
-      specialArgs = {inherit nixpkgs;};
-    };
+            environment.systemPackages = with pkgs; [
+              corepack
+              curl
+              direnv
+              git
+              nodejs
+              vim
+              wget
+            ];
+          })
+        ];
+      });
   };
 }
