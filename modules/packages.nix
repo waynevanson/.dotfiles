@@ -50,6 +50,7 @@ in {
     alacritty
     alejandra
     bitwig-studio'
+    ungoogled-chromium
     direnv
     discord
     ffmpeg
@@ -58,6 +59,7 @@ in {
     gnutar
     kdePackages.kdenlive
     lmms
+    obsidian
     parallel
     prusa-slicer
     rar
