@@ -63,6 +63,7 @@ in {
     parallel
     prusa-slicer
     rar
+    rclone
     stow
     unzip
     vim
