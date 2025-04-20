@@ -21,6 +21,7 @@
         esbenp.prettier-vscode
         github.github-vscode-theme
         mkhl.direnv
+        ms-kubernetes-tools.vscode-kubernetes-tools
         ms-vscode-remote.remote-containers
         pkief.material-icon-theme
         pkief.material-product-icons
@@ -50,6 +51,7 @@ in {
     alacritty
     alejandra
     bitwig-studio'
+    brave
     ungoogled-chromium
     direnv
     discord
@@ -58,6 +60,7 @@ in {
     git
     gnutar
     kdePackages.kdenlive
+    libreoffice-qt
     lmms
     obsidian
     parallel
