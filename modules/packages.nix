@@ -30,6 +30,7 @@
         rust-lang.rust-analyzer
         tamasfe.even-better-toml
         vscodevim.vim
+        denoland.vscode-deno
       ]
       ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
@@ -53,6 +54,7 @@ in {
     bitwig-studio'
     brave
     ungoogled-chromium
+    deno
     direnv
     discord
     ffmpeg
@@ -62,11 +64,18 @@ in {
     kdePackages.kdenlive
     libreoffice-qt
     lmms
+    neovim
+    gnumake
+    unzip
+    gcc
+    ripgrep
+    fd
     obsidian
     parallel
     prusa-slicer
     rar
     rclone
+    solvespace
     stow
     unzip
     vim

@@ -79,5 +79,9 @@
   "gitlens.launchpad.indicator.enabled": false,
   "chat.commandCenter.enabled": false,
   "diffEditor.renderSideBySide": false,
-  "workbench.colorTheme": "GitHub Dark"
+  "workbench.colorTheme": "GitHub Dark",
+  "extensions.ignoreRecommendations": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }
