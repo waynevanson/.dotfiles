@@ -1,5 +1,0 @@
-# Using custom rules so we can copy the dots in the ignore file.
-
-^/README.md
-\.git
-\.gitignore
