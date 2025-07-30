@@ -2,7 +2,21 @@
 
 My dotfiles for CachyOS Hyprland preconfigured stack.
 
-## How to use
+## Instructions
 
-I will forget because I still haven't remembered so let's write it down!
+### Hardware config
+
+You should check if hardware config has been generated.
+
+```sh
+
+```
+
+### Build
+
+Literally just build
+
+```sh
+nixos-rebuild --flake ~/.dotfiles
+```
 
