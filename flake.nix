@@ -27,6 +27,7 @@
         specialArgs = inputs;
 
         modules = [
+          ./hardware-configuration.nix
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
           "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
           home-manager.nixosModules.home-manager
