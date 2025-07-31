@@ -106,7 +106,7 @@
       ...
     }: {
       home.packages = with pkgs; [
-        clang
+        #clang
         llvmPackages.bintools
         rustup
       ];
