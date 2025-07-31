@@ -14,8 +14,7 @@
     nixpkgs,
     ...
   } @ inputs:
-    flake-utils.lib.eachDefaultSystemPassThrough (system: let
-    in {
+    flake-utils.lib.eachDefaultSystemPassThrough (system: {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         inherit system;
 
@@ -27,7 +26,7 @@
         specialArgs = inputs;
 
         modules = [
-          ./hardware-configuration.nix
+          ./configuration.nix
           "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
           "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
           home-manager.nixosModules.home-manager
@@ -51,7 +50,7 @@
             lib,
             ...
           }: {
-            environment.systemPackages = lib.mkBefore (with pkgs; [
+            environment.systemPackages = lib.mkDefault (with pkgs; [
               podman-tui
               podman-compose
             ]);
@@ -78,14 +77,6 @@
               };
             };
           })
-          #./hyprland.nix
-          #./nvim.nix
-          #./packages.nix
-          #./podman.nix
-          #./rust.nix
-          #./vscode.nix
-          #./waybar.nix
-          #./zsh.nix
         ];
       };
     });
