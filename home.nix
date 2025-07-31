@@ -23,10 +23,19 @@
           stow
           volta
           discord
+          vscode.fhs
+          alacritty
         ];
       };
 
       home.stateVersion = "25.05";
+    })
+
+    ({pkgs, ...}: {
+      home.packages = with pkgs; [
+        gnutar
+vim 
+      ];
     })
 
     # hyprland
@@ -49,6 +58,7 @@
       };
       xdg.configFile."waybar/config.jsonc".source = config;
     })
+
     # git
     {
       programs.git = {
