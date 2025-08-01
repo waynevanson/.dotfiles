@@ -42,11 +42,6 @@
       pkgs,
       ...
     }: {
- programs.hyprland = {
-    enable = true;
-    withUWSM = true;
-    xwayland.enable = true;
-  };
       wayland.windowManager.hyprland = {
         enable = true;
         package = pkgs.hyprland;
@@ -61,10 +56,10 @@
             "WAYLAND_DISPLAY"
             "XDG_CURRENT_DESKTOP"
           ];
-	  extraCommands = [
-	    "systemctl --user stop hyprland-session.target"
+          extraCommands = [
+            "systemctl --user stop hyprland-session.target"
             "systemctl --user start hyprland-session.target"
- 	  ];
+          ];
           enableXdgAutostart = false;
         };
         xwayland.enable = true;
