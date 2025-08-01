@@ -53,8 +53,8 @@
 
   # Configure keymap in X11
   #services.xserver.xkb = {
-    #layout = "au";
-    #variant = "";
+  #layout = "au";
+  #variant = "";
   #};
 
   # Enable CUPS to print documents.

@@ -37,12 +37,41 @@
     })
 
     # hyprland
-    ({lib, ...}: {
+    ({
+      lib,
+      pkgs,
+      ...
+    }: {
+ programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+    xwayland.enable = true;
+  };
       wayland.windowManager.hyprland = {
         enable = true;
-        xwayland.enable = true;
+        package = pkgs.hyprland;
+        portalPackage = pkgs."xdg-desktop-portal-hyprland";
+        plugins = [];
         extraConfig = lib.readFile ./hyprland.conf;
+        systemd = {
+          enable = true;
+          variables = [
+            "DISPLAY"
+            "HYPRLAND_DISPLAY"
+            "WAYLAND_DISPLAY"
+            "XDG_CURRENT_DESKTOP"
+          ];
+	  extraCommands = [
+	    "systemctl --user stop hyprland-session.target"
+            "systemctl --user start hyprland-session.target"
+ 	  ];
+          enableXdgAutostart = false;
+        };
+        xwayland.enable = true;
       };
+      home.packages = with pkgs; [
+        kitty
+      ];
     })
 
     # waybar
