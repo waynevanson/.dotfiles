@@ -48,25 +48,8 @@
         portalPackage = pkgs."xdg-desktop-portal-hyprland";
         plugins = [];
         extraConfig = lib.readFile ./hyprland.conf;
-        systemd = {
-          enable = true;
-          variables = [
-            "DISPLAY"
-            "HYPRLAND_DISPLAY"
-            "WAYLAND_DISPLAY"
-            "XDG_CURRENT_DESKTOP"
-          ];
-          extraCommands = [
-            "systemctl --user stop hyprland-session.target"
-            "systemctl --user start hyprland-session.target"
-          ];
-          enableXdgAutostart = false;
-        };
         xwayland.enable = true;
       };
-      home.packages = with pkgs; [
-        kitty
-      ];
     })
 
     # waybar
