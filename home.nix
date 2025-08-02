@@ -8,33 +8,31 @@
     # Basics
     ({
       pkgs,
-      lib,
       ...
-    }: {
-      home = {
-        packages = with pkgs; [
-          neofetch
-          zip
-          xz
-          unzip
-          git
-          stow
-          volta
-          discord
-          vscode.fhs
-          alacritty
-	  prusa-slicer
-        ];
-      };
+    }: 
 
-      home.stateVersion = "25.05";
-    })
+	let 
+dotfiles = pkgs.writeShellBinScript "dotfiles" (builtins.readFile ./dotfiles.sh);
+	in
+    {
+      
 
-    ({pkgs, ...}: {
       home.packages = with pkgs; [
-        gnutar
-        vim
-      ];
+          alacritty
+	  alejandra
+          discord
+          git
+	  gnutar
+	  nerdfonts.jetbrains-mono
+          neofetch
+	  prusa-slicer
+          stow
+          unzip
+          volta
+          xz
+          zip
+          vscode.fhs
+        ];
     })
 
     # hyprland
