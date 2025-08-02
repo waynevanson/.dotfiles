@@ -22,12 +22,9 @@
       ];
     };
 
-    waynevanson = {
-      pkgs,
-      ...
-    }: {
+    waynevanson = {pkgs, ...}: {
       imports = [
-	home-manager.nixosModules.home-manager
+        home-manager.nixosModules.home-manager
       ];
 
       home-manager = {
@@ -44,10 +41,7 @@
       };
     };
 
-    podman = {
-      pkgs,
-      ...
-    }: {
+    podman = {pkgs, ...}: {
       environment.systemPackages = with pkgs; [
         podman-tui
         podman-compose

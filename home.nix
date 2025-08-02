@@ -6,33 +6,27 @@
 }: {
   imports = [
     # Basics
-    ({
-      pkgs,
-      ...
-    }: 
-
-	let 
-dotfiles = pkgs.writeShellBinScript "dotfiles" (builtins.readFile ./dotfiles.sh);
-	in
-    {
-      
-
+    ({pkgs, ...}: let
+      dotfiles = pkgs.writeShellBinScript "dotfiles" (builtins.readFile ./dotfiles.sh);
+    in {
       home.packages = with pkgs; [
-          alacritty
-	  alejandra
-          discord
-          git
-	  gnutar
-	  nerdfonts.jetbrains-mono
-          neofetch
-	  prusa-slicer
-          stow
-          unzip
-          volta
-          xz
-          zip
-          vscode.fhs
-        ];
+        alacritty
+        alejandra
+        discord
+        dotfiles
+        git
+        gnutar
+        nerd-fonts.jetbrains-mono
+        neofetch
+        prusa-slicer
+        stow
+        unzip
+        volta
+        xz
+        zip
+        vscode.fhs
+      ];
+      home.stateVersion = "25.05";
     })
 
     # hyprland
