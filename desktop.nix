@@ -46,9 +46,11 @@
     waybar
     alacritty
     rofi-wayland
+    wofi
     firefox
     zsh
     ranger
+    xorg.xcursorthemes
   ];
 
   security.polkit.enable = true;
