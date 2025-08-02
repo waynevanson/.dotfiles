@@ -10,6 +10,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./desktop.nix
   ];
 
   # Bootloader.
@@ -44,18 +45,11 @@
     LC_TIME = "en_AU.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  # services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
-  #services.xserver.displayManager.gdm.enable = true;
-  #services.xserver.desktopManager.gnome.enable = true;
-
   # Configure keymap in X11
-  #services.xserver.xkb = {
-  #layout = "au";
-  #variant = "";
-  #};
+  services.xserver.xkb = {
+    layout = "au";
+    variant = "";
+  };
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -79,16 +73,6 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.waynevanson = {
-    isNormalUser = true;
-    description = "Wayne Van Son";
-    extraGroups = ["networkmanager" "wheel"];
-    packages = with pkgs; [
-      #  thunderbird
-    ];
-  };
-
   # Enable automatic login for the user.
   services.displayManager.autoLogin.enable = true;
   services.displayManager.autoLogin.user = "waynevanson";
@@ -102,10 +86,11 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  #environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
-  #];
+  environment.systemPackages = with pkgs; [
+    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    wget
+    curl
+  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
