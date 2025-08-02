@@ -23,6 +23,7 @@
           discord
           vscode.fhs
           alacritty
+	  prusa-slicer
         ];
       };
 
