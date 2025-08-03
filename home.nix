@@ -7,7 +7,7 @@
   imports = [
     # Basics
     ({pkgs, ...}: let
-      dotfiles = pkgs.writeShellBinScript "dotfiles" (builtins.readFile ./dotfiles.sh);
+      dotfiles = pkgs.writeShellScriptBin "dotfiles" (builtins.readFile ./dotfiles.sh);
     in {
       home.packages = with pkgs; [
         alacritty
