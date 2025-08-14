@@ -12,12 +12,14 @@
       home.packages = with pkgs; [
         alacritty
         alejandra
+	direnv
         discord
         dotfiles
         git
         gnutar
         nerd-fonts.jetbrains-mono
         neofetch
+	nil
         prusa-slicer
         stow
         unzip
@@ -108,12 +110,15 @@
       home.packages = with pkgs; [
         #clang
         llvmPackages.bintools
+	probe-rs-tools
         rustup
+	sccache
       ];
       programs.zsh = {
         enable = true;
         initContent = ''
           export PATH=$PATH:''${CARGO_HOME:-~/.cargo}/bin
+	  export RUSTC_WRAPPER=''${pkgs.sccache}/bin/sccache
         '';
       };
       home.sessionVariables = {
