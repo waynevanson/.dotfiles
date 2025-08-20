@@ -1,0 +1,15 @@
+[font.normal]
+
+[mouse]
+hide_when_typing = true
+
+[window]
+blur = true
+dynamic_padding = true
+opacity = 0.5
+title = "Terminal"
+
+[window.padding]
+x = 4
+y = 4
+

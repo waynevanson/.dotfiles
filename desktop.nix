@@ -16,7 +16,7 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+          command = "${pkgs.tuigreet}/bin/tuigreet --remember --time --cmd Hyprland";
           user = "greeter";
         };
       };
@@ -32,7 +32,7 @@
     xdg.portal = {
       enable = true;
       wlr.enable = true;
-      #extraPortals = with pkgs; [xdg-desktop-portal-gtk xdg-desktop-portal-hyprland];
+      extraPortals = with pkgs; [xdg-desktop-portal-gtk];
     };
 
     programs = {
@@ -50,7 +50,7 @@
       firefox
       hyprland
       gnome-icon-theme
-      greetd.tuigreet
+      tuigreet
       ranger
       rofi-wayland
       seatd
