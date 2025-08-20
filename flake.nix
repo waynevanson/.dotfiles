@@ -3,9 +3,10 @@
     flake-utils.url = "github:numtide/flake-utils";
     hyprland = {
       url = "github:hyprwm/hyprland";
-      #inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    eew.url = "github:elkowar/eww";
   };
 
   outputs = {
