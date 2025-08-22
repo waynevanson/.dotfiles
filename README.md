@@ -1,8 +1,12 @@
 # `.dotfiles`
 
-My dotfiles for CachyOS Hyprland preconfigured stack.
+My dotfiles for NixOS Hyprland preconfigured stack.
+
+I can't wait to add more stuff but sleep is pretty important.
 
 ## Instructions
+
+TODO write this.
 
 ### Hardware config
 

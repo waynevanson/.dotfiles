@@ -1,0 +1,1 @@
+Configs/neovim/.config/nvim/init.vim
