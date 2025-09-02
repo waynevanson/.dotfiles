@@ -1,13 +1,7 @@
 {
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    hyprland.url = "github:hyprwm/hyprland";
-    hyprland.inputs.nixpkgs.follows = "nixpkgs";
-    hyprcursor.url = "github:hyprwm/hyprcursor";
-    hyprcursor.inputs.nixpkgs.follows = "nixpkgs";
-    eew.url = "github:elkowar/eww";
-    eew.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
   };
 
   outputs = {
@@ -15,19 +9,109 @@
     nixpkgs,
     ...
   } @ inputs: let
-    bootable' = {
-      imports = [
-        "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-        "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
-      ];
-    };
+    gnome' = {...}: {
+      services.xserver = {
+        displayManager.gdm.enable = true;
+        desktopManager.gnome.enable = true;
+      };
 
+      # Enable automatic login for the user.
+      services.displayManager.autoLogin.enable = true;
+      services.displayManager.autoLogin.user = "waynevanson";
+
+      # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
+      systemd.services."getty@tty1".enable = false;
+      systemd.services."autovt@tty1".enable = false;
+
+      nix.settings = {
+        experimental-features = ["nix-command" "flakes"];
+        substituters = [
+          "https://nix-community.cachix.org"
+        ];
+        trusted-public-keys = [
+          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        ];
+      };
+
+      hardware.bluetooth = {
+        enable = true;
+        powerOnBoot = true;
+        settings = {
+          General = {
+            Experimental = true;
+          };
+        };
+      };
+
+      # Bootloader.
+      boot.loader.systemd-boot.enable = true;
+      boot.loader.efi.canTouchEfiVariables = true;
+
+      networking.hostName = "nixos"; # Define your hostname.
+      # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+      # Configure network proxy if necessary
+      # networking.proxy.default = "http://user:password@proxy:port/";
+      # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+      # Enable networking
+      networking.networkmanager.enable = true;
+
+      # Set your time zone.
+      time.timeZone = "Australia/Melbourne";
+
+      # Select internationalisation properties.
+      i18n.defaultLocale = "en_AU.UTF-8";
+
+      i18n.extraLocaleSettings = {
+        LC_ADDRESS = "en_AU.UTF-8";
+        LC_IDENTIFICATION = "en_AU.UTF-8";
+        LC_MEASUREMENT = "en_AU.UTF-8";
+        LC_MONETARY = "en_AU.UTF-8";
+        LC_NAME = "en_AU.UTF-8";
+        LC_NUMERIC = "en_AU.UTF-8";
+        LC_PAPER = "en_AU.UTF-8";
+        LC_TELEPHONE = "en_AU.UTF-8";
+        LC_TIME = "en_AU.UTF-8";
+      };
+
+      # Configure keymap in X11
+      services.xserver.xkb = {
+        layout = "au";
+        variant = "";
+      };
+
+      # Enable CUPS to print documents.
+      services.printing.enable = true;
+
+      # Enable sound with pipewire.
+      services.pulseaudio.enable = false;
+      security.rtkit.enable = true;
+      services.pipewire = {
+        enable = true;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
+        # If you want to use JACK applications, uncomment this
+        #jack.enable = true;
+
+        # use the example session manager (no others are packaged yet so this is enabled by default,
+        # no need to redefine it in your config for now)
+        #media-session.enable = true;
+      };
+
+      # Enable touchpad support (enabled default in most desktopManager).
+      services.xserver.libinput.enable = true;
+
+      system.stateVersion = "25.05";
+    };
     # user level packages
     waynevanson' = {pkgs, ...}: let
       dotfiles' = pkgs.writeShellScriptBin "dotfiles" (builtins.readFile ./dotfiles.sh);
       packages = with pkgs; [
         alacritty
         alejandra
+        curl
         direnv
         discord
         dotfiles'
@@ -44,6 +128,7 @@
         tuckr
         unzip
         volta
+        wget
         vscode.fhs
         xz
         zip
@@ -60,6 +145,26 @@
       };
     };
 
+    cursor' = {pkgs, ...}: {
+      environment.systemPackages = with pkgs; [
+        bibata-cursors
+      ];
+
+      environment.sessionVariables = {
+        XCURSOR_THEME = "Bibata-Classic-Ice";
+        XCURSOR_SIZE = "32";
+      };
+    };
+
+    zsh' = {
+      programs.zsh = {
+        enable = true;
+        enableCompletion = true;
+        enableBashCompletion = true;
+        enableLsColors = true;
+      };
+    };
+
     podman' = {pkgs, ...}: {
       virtualisation = {
         containers.enable = true;
@@ -69,11 +174,6 @@
           defaultNetwork.settings.dns_enabled = true;
         };
       };
-    };
-
-    desktop' = {
-      imports = [./desktop.nix];
-      services.wayland.desktop'.enable = true;
     };
 
     neovim' = {
@@ -91,7 +191,7 @@
       ...
     }: {
       environment.systemPackages = with pkgs; [
-        #clang
+        clang
         llvmPackages.bintools
         probe-rs-tools
         rustup
@@ -130,13 +230,14 @@
         specialArgs = {inherit inputs;};
 
         modules = [
-          ./configuration/workstation.nix
           ./hardware-configuration/${"ThinkPad P16v Gen 1"}/hardware-configuration.nix
-          desktop'
+          gnome'
           podman'
-          waynevanson'
           rust'
           neovim'
+          cursor'
+          waynevanson'
+          zsh'
         ];
       };
     });
