@@ -233,7 +233,7 @@
           ./hardware-configuration/${"ThinkPad P16v Gen 1"}/hardware-configuration.nix
           gnome'
           podman'
-          rust'
+          # rust'
           neovim'
           cursor'
           waynevanson'
