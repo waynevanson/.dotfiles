@@ -6,7 +6,7 @@ hide_when_typing = true
 [window]
 blur = true
 dynamic_padding = true
-opacity = 0.5
+opacity = 0.95
 title = "Terminal"
 
 [window.padding]

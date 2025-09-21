@@ -176,6 +176,15 @@
       };
     };
 
+    docker' = {pkgs,...}: {
+      virtualisation.docker.enable = true;
+      users.users.waynevanson.extraGroups = ["docker"];
+      environment.systemPackages = with pkgs; [
+        docker
+	docker-compose
+      ];
+    };
+
     neovim' = {
       programs.neovim = {
         enable = true;
@@ -232,7 +241,8 @@
         modules = [
           ./hardware-configuration/${"ThinkPad P16v Gen 1"}/hardware-configuration.nix
           gnome'
-          podman'
+	  docker'
+          # podman'
           # rust'
           neovim'
           cursor'
