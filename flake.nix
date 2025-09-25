@@ -15,23 +15,9 @@
         desktopManager.gnome.enable = true;
       };
 
-      # Enable automatic login for the user.
-      services.displayManager.autoLogin.enable = true;
-      services.displayManager.autoLogin.user = "waynevanson";
-
       # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
       systemd.services."getty@tty1".enable = false;
       systemd.services."autovt@tty1".enable = false;
-
-      nix.settings = {
-        experimental-features = ["nix-command" "flakes"];
-        substituters = [
-          "https://nix-community.cachix.org"
-        ];
-        trusted-public-keys = [
-          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        ];
-      };
 
       hardware.bluetooth = {
         enable = true;
@@ -56,24 +42,6 @@
 
       # Enable networking
       networking.networkmanager.enable = true;
-
-      # Set your time zone.
-      time.timeZone = "Australia/Melbourne";
-
-      # Select internationalisation properties.
-      i18n.defaultLocale = "en_AU.UTF-8";
-
-      i18n.extraLocaleSettings = {
-        LC_ADDRESS = "en_AU.UTF-8";
-        LC_IDENTIFICATION = "en_AU.UTF-8";
-        LC_MEASUREMENT = "en_AU.UTF-8";
-        LC_MONETARY = "en_AU.UTF-8";
-        LC_NAME = "en_AU.UTF-8";
-        LC_NUMERIC = "en_AU.UTF-8";
-        LC_PAPER = "en_AU.UTF-8";
-        LC_TELEPHONE = "en_AU.UTF-8";
-        LC_TIME = "en_AU.UTF-8";
-      };
 
       # Configure keymap in X11
       services.xserver.xkb = {
@@ -101,10 +69,54 @@
       };
 
       # Enable touchpad support (enabled default in most desktopManager).
-      services.xserver.libinput.enable = true;
+      services.libinput.enable = true;
+    };
 
+    locale' = {
+      # Set your time zone.
+      time.timeZone = "Australia/Melbourne";
+
+      # Select internationalisation properties.
+      i18n.defaultLocale = "en_AU.UTF-8";
+
+      i18n.extraLocaleSettings = {
+        LC_ADDRESS = "en_AU.UTF-8";
+        LC_IDENTIFICATION = "en_AU.UTF-8";
+        LC_MEASUREMENT = "en_AU.UTF-8";
+        LC_MONETARY = "en_AU.UTF-8";
+        LC_NAME = "en_AU.UTF-8";
+        LC_NUMERIC = "en_AU.UTF-8";
+        LC_PAPER = "en_AU.UTF-8";
+        LC_TELEPHONE = "en_AU.UTF-8";
+        LC_TIME = "en_AU.UTF-8";
+      };
+    };
+
+    system' = {pkgs, ...}: {
+      # Realtime kernel
+      boot.kernelPackages = pkgs.linuxPackages-rt;
+
+      # Enable automatic login for the user.
+      services.displayManager.autoLogin.enable = true;
+      services.displayManager.autoLogin.user = "waynevanson";
+
+      nix.settings = {
+        # enable flakes
+        experimental-features = ["nix-command" "flakes"];
+
+        # enable cachix caches
+        substituters = [
+          "https://nix-community.cachix.org"
+        ];
+        trusted-public-keys = [
+          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        ];
+      };
+
+      # don't change this unless on a new system.
       system.stateVersion = "25.05";
     };
+
     # user level packages
     waynevanson' = {pkgs, ...}: let
       dotfiles' = pkgs.writeShellScriptBin "dotfiles" (builtins.readFile ./dotfiles.sh);
@@ -120,10 +132,6 @@
         nerd-fonts.jetbrains-mono
         neofetch
         nil
-        podman
-        podman-desktop
-        podman-compose
-        podman-tui
         prusa-slicer
         tuckr
         unzip
@@ -152,10 +160,11 @@
 
       environment.sessionVariables = {
         XCURSOR_THEME = "Bibata-Classic-Ice";
-        XCURSOR_SIZE = "32";
+        XCURSOR_SIZE = "24";
       };
     };
 
+    # todo: add ohmyposh
     zsh' = {
       programs.zsh = {
         enable = true;
@@ -165,23 +174,12 @@
       };
     };
 
-    podman' = {pkgs, ...}: {
-      virtualisation = {
-        containers.enable = true;
-        podman = {
-          enable = true;
-          dockerCompat = true;
-          defaultNetwork.settings.dns_enabled = true;
-        };
-      };
-    };
-
-    docker' = {pkgs,...}: {
+    docker' = {pkgs, ...}: {
       virtualisation.docker.enable = true;
       users.users.waynevanson.extraGroups = ["docker"];
       environment.systemPackages = with pkgs; [
         docker
-	docker-compose
+        docker-compose
       ];
     };
 
@@ -192,39 +190,6 @@
         vimAlias = true;
         defaultEditor = true;
       };
-    };
-
-    rust' = {
-      pkgs,
-      lib,
-      ...
-    }: {
-      environment.systemPackages = with pkgs; [
-        clang
-        llvmPackages.bintools
-        probe-rs-tools
-        rustup
-      ];
-
-      environment.sessionVariables = {
-        BINDGEN_EXTRA_CLANG_ARGS =
-          lib.concatStringsSep " "
-          (builtins.map builtins.toString (
-            (builtins.map (a: ''-I"${a}/include"'') [
-              pkgs.glibc.dev
-            ])
-            ++ [
-              ''-I"${pkgs.llvmPackages_latest.libclang.lib}/lib/clang/${pkgs.llvmPackages_latest.libclang.version}/include"''
-              ''-I"${pkgs.glib.dev}/include/glib-2.0"''
-              ''-I${pkgs.glib.out}/lib/glib-2.0/include/''
-            ]
-          ));
-        LIBCLANG_PATH = pkgs.lib.makeLibraryPath [pkgs.llvmPackages_latest.libclang.lib];
-      };
-
-      environment.shellInit = ''
-        export PATH="$PATH:~/.volta/bin"
-      '';
     };
   in
     flake-utils.lib.eachDefaultSystemPassThrough (system: {
@@ -240,12 +205,12 @@
 
         modules = [
           ./hardware-configuration/${"ThinkPad P16v Gen 1"}/hardware-configuration.nix
-          gnome'
-	  docker'
-          # podman'
-          # rust'
-          neovim'
           cursor'
+          docker'
+          gnome'
+          locale'
+          neovim'
+          system'
           waynevanson'
           zsh'
         ];
