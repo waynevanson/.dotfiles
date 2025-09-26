@@ -120,9 +120,18 @@
     # user level packages
     waynevanson' = {pkgs, ...}: let
       dotfiles' = pkgs.writeShellScriptBin "dotfiles" (builtins.readFile ./dotfiles.sh);
+      bitwig' = pkgs.bitwig-studio.overrideAttrs rec {
+        version = "5.0.11";
+        src = pkgs.fetchurl {
+          name = "bitwig-studio-${version}.deb";
+          url = "https://www.bitwig.com/dl/Bitwig%20Studio/${version}/installer_linux/";
+          hash = "sha256-c9bRWVWCC9hLxmko6EHgxgmghrxskJP4PQf3ld2BHoY=";
+        };
+      };
       packages = with pkgs; [
         alacritty
         alejandra
+        bitwig'
         curl
         direnv
         discord
