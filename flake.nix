@@ -94,7 +94,7 @@
 
     system' = {pkgs, ...}: {
       # Realtime kernel
-      boot.kernelPackages = pkgs.linuxPackages-rt;
+      # boot.kernelPackages = pkgs.linuxPackages-rt;
 
       # Enable automatic login for the user.
       services.displayManager.autoLogin.enable = true;
@@ -120,12 +120,15 @@
     # user level packages
     waynevanson' = {pkgs, ...}: let
       dotfiles' = pkgs.writeShellScriptBin "dotfiles" (builtins.readFile ./dotfiles.sh);
-      bitwig' = pkgs.bitwig-studio.overrideAttrs rec {
-        version = "5.0.11";
-        src = pkgs.fetchurl {
-          name = "bitwig-studio-${version}.deb";
-          url = "https://www.bitwig.com/dl/Bitwig%20Studio/${version}/installer_linux/";
-          hash = "sha256-c9bRWVWCC9hLxmko6EHgxgmghrxskJP4PQf3ld2BHoY=";
+      # Workaround for https://github.com/NixOS/nixpkgs/issues/446226
+      bitwig' = pkgs.callPackage (pkgs.path + "/pkgs/applications/audio/bitwig-studio/bitwig-wrapper.nix") {
+        bitwig-studio-unwrapped = pkgs.bitwig-studio5-unwrapped.overrideAttrs rec {
+          version = "5.0.11";
+          src = pkgs.fetchurl {
+            name = "bitwig-studio-${version}.deb";
+            url = "https://downloads.bitwig.com/${version}/bitwig-studio-${version}.deb";
+            hash = "sha256-c9bRWVWCC9hLxmko6EHgxgmghrxskJP4PQf3ld2BHoY=";
+          };
         };
       };
       packages = with pkgs; [
