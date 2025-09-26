@@ -1,7 +1,7 @@
 {
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   };
 
   outputs = {
@@ -10,7 +10,7 @@
     ...
   } @ inputs: let
     gnome' = {...}: {
-      services.xserver = {
+      services = {
         displayManager.gdm.enable = true;
         desktopManager.gnome.enable = true;
       };
