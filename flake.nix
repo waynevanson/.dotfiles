@@ -121,7 +121,7 @@
     waynevanson' = {pkgs, ...}: let
       dotfiles' = pkgs.writeShellScriptBin "dotfiles" (builtins.readFile ./dotfiles.sh);
       # Workaround for https://github.com/NixOS/nixpkgs/issues/446226
-      bitwig' = pkgs.callPackage (pkgs.path + "/pkgs/applications/audio/bitwig-studio/bitwig-wrapper.nix") {
+      bitwig' = pkgs.bitwig-studio.override {
         bitwig-studio-unwrapped = pkgs.bitwig-studio5-unwrapped.overrideAttrs rec {
           version = "5.0.11";
           src = pkgs.fetchurl {
