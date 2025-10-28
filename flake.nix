@@ -2,11 +2,15 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # If using a stable channel you can use `url = "github:nix-community/nixvim/nixos-<version>"`
+    nixvim.url = "github:nix-community/nixvim";
+    nixvim.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
     flake-utils,
     nixpkgs,
+    nixvim,
     ...
   } @ inputs: let
     gnome' = {...}: {
@@ -117,6 +121,11 @@
       system.stateVersion = "25.05";
     };
 
+    volta' = {pkgs, ...}: {
+      environment.systemPackages = with pkgs; [volta];
+      environment.sessionVariables.PATH = "$PATH:~/.volta/bin";
+    };
+
     # user level packages
     waynevanson' = {pkgs, ...}: let
       dotfiles' = pkgs.writeShellScriptBin "dotfiles" (builtins.readFile ./dotfiles.sh);
@@ -143,11 +152,13 @@
         gnutar
         nerd-fonts.jetbrains-mono
         neofetch
+        nfs-utils
         nil
         prusa-slicer
+        runelite
+        tmux
         tuckr
         unzip
-        volta
         wget
         vscode.fhs
         xz
@@ -203,6 +214,28 @@
         defaultEditor = true;
       };
     };
+
+    nixvim' = {inputs, ...}: {
+      imports = [inputs.nixvim.nixosModules.nixvim];
+
+      programs.nixvim = {
+        enable = true;
+	options = {
+  	  number = true;
+	  relativenumber = true;
+	};
+      };
+    };
+
+    nfs' = {
+      services.gvfs.enable = true;
+      fileSystems."/mnt/nas" = {
+        device = "192.168.1.102:/mnt/storage_pool_0/nextcloud/user";
+        fsType = "nfs";
+        options = ["x-systemd.automount" "x-systemd.idle-timeout=600" "noauto"];
+      };
+      boot.supportedFilesystems = ["nfs"];
+    };
   in
     flake-utils.lib.eachDefaultSystemPassThrough (system: {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
@@ -221,8 +254,11 @@
           docker'
           gnome'
           locale'
-          neovim'
+          #neovim'
+          nixvim'
+          #nfs'
           system'
+          volta'
           waynevanson'
           zsh'
         ];
