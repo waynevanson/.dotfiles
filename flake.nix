@@ -154,6 +154,7 @@
         neofetch
         nfs-utils
         nil
+	openscad
         prusa-slicer
         runelite
         tmux
@@ -206,27 +207,6 @@
       ];
     };
 
-    neovim' = {
-      programs.neovim = {
-        enable = true;
-        viAlias = true;
-        vimAlias = true;
-        defaultEditor = true;
-      };
-    };
-
-    nixvim' = {inputs, ...}: {
-      imports = [inputs.nixvim.nixosModules.nixvim];
-
-      programs.nixvim = {
-        enable = true;
-	options = {
-  	  number = true;
-	  relativenumber = true;
-	};
-      };
-    };
-
     nfs' = {
       services.gvfs.enable = true;
       fileSystems."/mnt/nas" = {
@@ -254,9 +234,7 @@
           docker'
           gnome'
           locale'
-          #neovim'
-          nixvim'
-          #nfs'
+          ./nixvim
           system'
           volta'
           waynevanson'
