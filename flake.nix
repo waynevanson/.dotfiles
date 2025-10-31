@@ -154,10 +154,9 @@
         neofetch
         nfs-utils
         nil
-	openscad
+        openscad
         prusa-slicer
         runelite
-        tmux
         tuckr
         unzip
         wget
@@ -195,6 +194,11 @@
         enableCompletion = true;
         enableBashCompletion = true;
         enableLsColors = true;
+
+        shellAliases = {
+          v = "nvim";
+          vim = "nvim";
+        };
       };
     };
 
@@ -205,6 +209,32 @@
         docker
         docker-compose
       ];
+    };
+
+    tmux' = {pkgs, ...}: {
+      programs.tmux = {
+        enable = true;
+        baseIndex = 1;
+        newSession = true;
+        escapeTime = 0;
+        historyLimit = 50000;
+
+        plugins = with pkgs.tmuxPlugins; [
+          better-mouse-mode
+          vim-tmux-navigator
+          catppuccin
+        ];
+
+        extraConfig = ''
+          set-option -sa terminal-overrides ",xterm*:Tc"
+
+          # https://old.reddit.com/r/tmux/comments/mesrci/tmux_2_doesnt_seem_to_use_256_colors/
+          set -g default-terminal "xterm-256color"
+          set -ga terminal-overrides ",*256col*:Tc"
+          set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
+          set-environment -g COLORTERM "truecolor"
+        '';
+      };
     };
 
     nfs' = {
@@ -236,7 +266,7 @@
           locale'
           ./nixvim
           system'
-          volta'
+          tmux'
           waynevanson'
           zsh'
         ];
