@@ -1,66 +1,25 @@
-{inputs, ...}: let
-  telescope = {pkgs, ...}: {
-    programs.nixvim.plugins = {
-      telescope.enable = true;
-      web-devicons.enable = true;
-    };
-    environment.systemPackages = with pkgs; [ripgrep];
-  };
-in {
-  imports = [
-    inputs.nixvim.nixosModules.nixvim
-    ./js.nix
-    telescope
-  ];
+{createDefaultExports, ...}: {
+  imports = [(createDefaultExports ./.)];
 
   programs.nixvim = {
     enable = true;
     defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
     opts = {
       number = true;
       relativenumber = true;
-      ruler = true;
     };
+    clipboard.register = "unnamedplus";
 
-    colorschemes.catppuccin = {
-      enable = true;
-      settings = {
-        flavour = "mocha";
-        integrations = {
-          gitsigns = true;
-          treesitter = true;
-          notify = true;
-        };
-      };
-    };
-
-    plugins.gitsigns = {
-      enable = true;
-    };
-
+    plugins.gitsigns.enable = true;
     plugins.vimux.enable = true;
     plugins.direnv.enable = true;
     plugins.treesitter.enable = true;
-    plugins.tmux-navigator = {
-      enable = true;
-    };
+    plugins.tmux-navigator.enable = true;
 
-    plugins.conform-nvim = {
-      enable = true;
-      settings = {
-        lsp_format = "fallback";
-        formatters_by_ft.nix = ["alejandra"];
-      };
-    };
-
-    autoCmd = [
-      # format on save
-      {
-        event = "BufWritePre";
-        callback = {__raw = "function() require('conform').format({}) end";};
-      }
-    ];
-
+    lsp.servers.nil.enable = true;
+    lsp.servers.ts_ls.enable = true;
     lsp.servers.rust_analyzer.enable = true;
     lsp.servers.postgres_lsp.enable = true;
     lsp.servers.html.enable = true;

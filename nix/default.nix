@@ -1,1 +1,7 @@
-{fns, ...}: fns.importNixModulesFromDir ./.
+{
+  imports = [
+  	./tmux.nix
+    ./alacritty
+    ./nixvim
+  ];
+}

@@ -9,10 +9,6 @@
     (inputs.wrappers.wrapperModules.alacritty.apply
       {
         inherit pkgs;
-        env = {
-          TERM = "xterm-256color";
-        };
-
         settings = pkgs.lib.recursiveUpdate settings theme;
       }).wrapper;
 in {

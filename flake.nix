@@ -9,10 +9,13 @@
 
     wrappers.url = "github:lassulus/wrappers";
     wrappers.inputs.nixpkgs.follows = "nixpkgs";
+
+    globset.url = "github:pdtpartners/globset";
   };
 
   outputs = {
     flake-utils,
+    globset,
     nixpkgs,
     nixvim,
     ...
@@ -125,11 +128,6 @@
       system.stateVersion = "25.05";
     };
 
-    volta' = {pkgs, ...}: {
-      environment.systemPackages = with pkgs; [volta];
-      environment.sessionVariables.PATH = "$PATH:~/.volta/bin";
-    };
-
     # user level packages
     waynevanson' = {pkgs, ...}: let
       dotfiles' = pkgs.writeShellScriptBin "dotfiles" (builtins.readFile ./dotfiles.sh);
@@ -198,12 +196,6 @@
         enableCompletion = true;
         enableBashCompletion = true;
         enableLsColors = true;
-
-        shellAliases = {
-          v = "nvim";
-          vi = "nvim";
-          vim = "nvim";
-        };
       };
     };
 
@@ -216,86 +208,49 @@
       ];
     };
 
-    tmux' = {pkgs, ...}: {
-      programs.tmux = {
-        enable = true;
-        baseIndex = 1;
-        newSession = true;
-        escapeTime = 0;
-        historyLimit = 50000;
-        customPaneNavigationAndResize = true;
-        keyMode = "vi";
-
-        plugins = with pkgs.tmuxPlugins; [
-          better-mouse-mode
-          vim-tmux-navigator
-          catppuccin
-        ];
-
-        extraConfigBeforePlugins = ''
-          set -ga terminal-overrides 'screen*:Tc'
-
-          # Split panes into current work directory, rather than home
-          bind '"' split-window -v -c "#{pane_current_path}"
-          bind '%' split-window -h -c "#{pane_current_path}"
-        '';
-      };
-    };
-
     nfs' = {
       services.gvfs.enable = true;
       fileSystems."/mnt/nas" = {
-        device = "192.168.1.102:/mnt/storage_pool_0/nextcloud/user";
+        device = "192.168.1.103:/mnt/storage_pool_0/nextcloud/user";
         fsType = "nfs";
         options = ["x-systemd.automount" "x-systemd.idle-timeout=600" "noauto"];
       };
       boot.supportedFilesystems = ["nfs"];
     };
-  in
-    flake-utils.lib.eachDefaultSystemPassThrough (system: {
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        inherit system;
 
-        pkgs = import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        };
+    createDefaultExports = dir: let
+      files = builtins.readDir dir;
+      nixFiles =
+        builtins.filter
+        (name: name != "default.nix" && builtins.match ".*\\.nix" name != null)
+        (builtins.attrNames files);
+      imports = map (name: dir + "/${name}") nixFiles;
+    in {inherit imports;};
+  in
+    flake-utils.lib.eachDefaultSystemPassThrough (system: let
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+    in {
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        inherit pkgs system;
 
         specialArgs = {
-          inherit inputs;
-          fns = {
-            # https://github.com/fred-drake/neovim/blob/master/config/javascript/default.nix
-            importNixModulesFromDir = dir: let
-              # Read all files in the current directory
-              files = builtins.readDir dir;
-
-              # Filter out default.nix and non-.nix files
-              nixFiles =
-                builtins.filter
-                (name: name != "default.nix" && builtins.match ".*\\.nix" name != null)
-                (builtins.attrNames files);
-
-              # Create a list of import statements
-              imports = map (name: dir + "/${name}") nixFiles;
-            in {
-              inherit imports;
-            };
-          };
+          inherit inputs createDefaultExports;
         };
 
         modules = [
           ./hardware-configuration/${"ThinkPad P16v Gen 1"}/hardware-configuration.nix
+          nixvim.nixosModules.nixvim
           cursor'
           docker'
           gnome'
           locale'
-          ./nix
-          ./nix/nixvim
-          ./nix/alacritty
           system'
-          tmux'
           waynevanson'
           zsh'
+          ./nix
         ];
       };
     });
