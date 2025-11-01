@@ -2,9 +2,13 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
     # If using a stable channel you can use `url = "github:nix-community/nixvim/nixos-<version>"`
     nixvim.url = "github:nix-community/nixvim";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
+
+    wrappers.url = "github:lassulus/wrappers";
+    wrappers.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
@@ -141,7 +145,6 @@
         };
       };
       packages = with pkgs; [
-        alacritty
         alejandra
         bitwig'
         curl
@@ -166,6 +169,7 @@
       ];
     in {
       programs.firefox.enable = true;
+      programs.direnv.enable = true;
 
       # Define a user account. Don't forget to set a password with ‘passwd’.
       users.users.waynevanson = {
@@ -197,6 +201,7 @@
 
         shellAliases = {
           v = "nvim";
+          vi = "nvim";
           vim = "nvim";
         };
       };
@@ -218,6 +223,8 @@
         newSession = true;
         escapeTime = 0;
         historyLimit = 50000;
+        customPaneNavigationAndResize = true;
+        keyMode = "vi";
 
         plugins = with pkgs.tmuxPlugins; [
           better-mouse-mode
@@ -225,14 +232,12 @@
           catppuccin
         ];
 
-        extraConfig = ''
-          set-option -sa terminal-overrides ",xterm*:Tc"
+        extraConfigBeforePlugins = ''
+          set -ga terminal-overrides 'screen*:Tc'
 
-          # https://old.reddit.com/r/tmux/comments/mesrci/tmux_2_doesnt_seem_to_use_256_colors/
-          set -g default-terminal "xterm-256color"
-          set -ga terminal-overrides ",*256col*:Tc"
-          set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
-          set-environment -g COLORTERM "truecolor"
+          # Split panes into current work directory, rather than home
+          bind '"' split-window -v -c "#{pane_current_path}"
+          bind '%' split-window -h -c "#{pane_current_path}"
         '';
       };
     };
@@ -256,7 +261,27 @@
           config.allowUnfree = true;
         };
 
-        specialArgs = {inherit inputs;};
+        specialArgs = {
+          inherit inputs;
+          fns = {
+            # https://github.com/fred-drake/neovim/blob/master/config/javascript/default.nix
+            importNixModulesFromDir = dir: let
+              # Read all files in the current directory
+              files = builtins.readDir dir;
+
+              # Filter out default.nix and non-.nix files
+              nixFiles =
+                builtins.filter
+                (name: name != "default.nix" && builtins.match ".*\\.nix" name != null)
+                (builtins.attrNames files);
+
+              # Create a list of import statements
+              imports = map (name: dir + "/${name}") nixFiles;
+            in {
+              inherit imports;
+            };
+          };
+        };
 
         modules = [
           ./hardware-configuration/${"ThinkPad P16v Gen 1"}/hardware-configuration.nix
@@ -264,7 +289,9 @@
           docker'
           gnome'
           locale'
-          ./nixvim
+          ./nix
+          ./nix/nixvim
+          ./nix/alacritty
           system'
           tmux'
           waynevanson'

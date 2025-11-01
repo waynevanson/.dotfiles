@@ -151,7 +151,8 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
-        "nixvim": "nixvim"
+        "nixvim": "nixvim",
+        "wrappers": "wrappers"
       }
     },
     "systems": {
@@ -196,6 +197,26 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "wrappers": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1761910002,
+        "narHash": "sha256-9yYFadMUwfCEUA9rPq3yO2ncBAQMy+/oJXvDAC3T/8g=",
+        "owner": "lassulus",
+        "repo": "wrappers",
+        "rev": "caef23aa4ab3dbb5b5d7253dcaacfcc6001d3209",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lassulus",
+        "repo": "wrappers",
         "type": "github"
       }
     }

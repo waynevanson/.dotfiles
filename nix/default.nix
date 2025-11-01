@@ -1,0 +1,1 @@
+{fns, ...}: fns.importNixModulesFromDir ./.

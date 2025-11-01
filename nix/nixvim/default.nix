@@ -1,32 +1,16 @@
 {inputs, ...}: let
-  js = {
-    programs.nixvim = {
-      lsp.servers.ts_ls = {
-        enable = true;
-        #filetypes = [
-        #  "javascript"
-        #  "javascriptreact"
-        #  "typescript"
-        #  "typescriptreact"
-        #];
-      };
-
-      plugins.conform-nvim = {
-        settings = {
-          formatters_by_ft = {
-            javascript = ["prettier"];
-            typescript = ["prettier"];
-            typescriptreact = ["prettier"];
-            javascriptreact = ["prettier"];
-          };
-        };
-      };
+  telescope = {pkgs, ...}: {
+    programs.nixvim.plugins = {
+      telescope.enable = true;
+      web-devicons.enable = true;
     };
+    environment.systemPackages = with pkgs; [ripgrep];
   };
 in {
   imports = [
     inputs.nixvim.nixosModules.nixvim
-    js
+    ./js.nix
+    telescope
   ];
 
   programs.nixvim = {
@@ -41,7 +25,7 @@ in {
     colorschemes.catppuccin = {
       enable = true;
       settings = {
-        flavour = "macchiato";
+        flavour = "mocha";
         integrations = {
           gitsigns = true;
           treesitter = true;
@@ -54,8 +38,8 @@ in {
       enable = true;
     };
 
-    plugins.telescope.enable = true;
     plugins.vimux.enable = true;
+    plugins.direnv.enable = true;
     plugins.treesitter.enable = true;
     plugins.tmux-navigator = {
       enable = true;
