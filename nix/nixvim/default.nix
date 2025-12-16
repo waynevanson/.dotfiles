@@ -9,14 +9,29 @@
     opts = {
       number = true;
       relativenumber = true;
+      tabstop = 4;
+      shiftwidth = 4;
+      expandtab = true;
     };
     clipboard.register = "unnamedplus";
+
+    lsp = {
+      inlayHints.enable = true;
+    };
 
     plugins.gitsigns.enable = true;
     plugins.vimux.enable = true;
     plugins.direnv.enable = true;
     plugins.treesitter.enable = true;
     plugins.tmux-navigator.enable = true;
+
+    plugins = {
+      lspconfig.enable = true;
+      cmp = {
+        enable = true;
+      };
+      cmp-nvim-lsp.enable = true;
+    };
 
     lsp.servers.nil.enable = true;
     lsp.servers.ts_ls.enable = true;

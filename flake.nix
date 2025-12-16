@@ -167,7 +167,10 @@
       ];
     in {
       programs.firefox.enable = true;
-      programs.direnv.enable = true;
+      programs.direnv = {
+        enable = true;
+        silent = true;
+      };
 
       # Define a user account. Don't forget to set a password with ‘passwd’.
       users.users.waynevanson = {

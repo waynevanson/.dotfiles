@@ -16,7 +16,7 @@
 
     extraConfigBeforePlugins = ''
       # Enable true color for terminals, otherwise neovim colors don't work.
-      set -ga terminal-overrides 'screen*:Tc'
+      set -ga terminal-overrides 'screen:Tc'
 
       # Split panes into current work directory, rather than home.
       bind '"' split-window -v -c "#{pane_current_path}"
