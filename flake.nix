@@ -20,6 +20,35 @@
     nixvim,
     ...
   } @ inputs: let
+    cosmic' = {...}: {
+      services.desktopManager.cosmic.enable = true;
+
+      networking.hostName = "nixos"; # Define your hostname.
+
+      boot.loader.systemd-boot.enable = true;
+      boot.loader.efi.canTouchEfiVariables = true;
+
+      #systemd.services."getty@tty1".enable = false;
+      #systemd.services."autovt@tty1".enable = false;
+
+      services.pulseaudio.enable = false;
+      security.rtkit.enable = true;
+      services.pipewire = {
+        enable = true;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
+        # If you want to use JACK applications, uncomment this
+        #jack.enable = true;
+
+        # use the example session manager (no others are packaged yet so this is enabled by default,
+        # no need to redefine it in your config for now)
+        #media-session.enable = true;
+      };
+
+      # Enable touchpad support (enabled default in most desktopManager).
+      services.libinput.enable = true;
+    };
     gnome' = {...}: {
       services = {
         displayManager.gdm.enable = true;
@@ -81,6 +110,9 @@
 
       # Enable touchpad support (enabled default in most desktopManager).
       services.libinput.enable = true;
+
+      services.displayManager.autoLogin.enable = true;
+      services.displayManager.autoLogin.user = "waynevanson";
     };
 
     locale' = {
@@ -246,6 +278,7 @@
         modules = [
           ./hardware-configuration/${"ThinkPad P16v Gen 1"}/hardware-configuration.nix
           nixvim.nixosModules.nixvim
+          #cosmic'
           cursor'
           docker'
           gnome'
