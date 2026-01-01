@@ -136,6 +136,8 @@
     };
 
     system' = {pkgs, ...}: {
+      fonts.fontconfig.enable = true;
+
       # Realtime kernel
       # boot.kernelPackages = pkgs.linuxPackages-rt;
 
@@ -181,6 +183,7 @@
         direnv
         discord
         dotfiles'
+        ghidra
         git
         gnutar
         nerd-fonts.jetbrains-mono
